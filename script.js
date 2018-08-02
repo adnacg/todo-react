@@ -4,6 +4,7 @@ class List extends React.Component {
     // bind the handlers
     this.changeHandler = this.changeHandler.bind(this);
     this.clickHandler = this.clickHandler.bind(this);
+    this.deleteHandler = this.deleteHandler.bind(this);
   }
 
   state = {
@@ -19,19 +20,35 @@ class List extends React.Component {
 
   // what to do when a click happens
   clickHandler() {
-    // put the list of to-do array in a variable
-    let todos = this.state.list;
-    // add the new word to the front of the to-do array
-    todos.unshift(this.state.word);
-    // change the state of list to the array now with new added word
-    // change the state of word back to empty
-    this.setState({ list: todos, word: "" });
+    // length validation of input
+    if (this.state.word.length > 0) {
+      // put the list of to-do array in a variable
+      let todos = this.state.list;
+      // add the new word to the front of the to-do array
+      todos.unshift(this.state.word);
+      // change the state of list to the array now with new added word
+      // change the state of word back to empty
+      this.setState({ list: todos, word: "" });
+    } else {
+      alert("You need to write something.");
+    }
+  }
+
+  deleteHandler(removeIndex) {
+    this.setState(state => ({
+      list: this.state.list.filter((item, index) => index !== removeIndex)
+    }));
   }
 
   render() {
     // reorganise the array into individual <li> tags
-    let arrayOfTodos = this.state.list.map(todo => {
-      return <li>{todo}</li>;
+    let arrayOfTodos = this.state.list.map((todo, index) => {
+      return (
+        <div key={index}>
+          <li>{todo}</li>
+          <button onClick={() => this.deleteHandler(index)}>Delete</button>
+        </div>
+      );
     });
 
     return (
